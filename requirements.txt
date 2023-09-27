@@ -17,9 +17,11 @@ seaborn
 from-root
 xgboost
 dill
-evidently
+evidently==0.2.8
 catboost
 category-encoders==2.5.1.post0
 flask
 flask_cors
 lime
+
+-e .
