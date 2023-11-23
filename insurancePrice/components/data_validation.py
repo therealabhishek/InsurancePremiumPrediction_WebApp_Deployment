@@ -278,5 +278,5 @@ class DataValidation:
             return data_validation_artifacts
 
         except Exception as e:
-            raise InsuranceException(e, sys) from e   
+            raise InsuranceException(e, sys) from e    
         

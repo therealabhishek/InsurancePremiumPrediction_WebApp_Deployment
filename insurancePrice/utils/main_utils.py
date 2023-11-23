@@ -113,13 +113,13 @@ class MainUtils:
         try:
             VERBOSE = 3
             CV = 2
-            N_JOBS = -1
+            #N_JOBS = -1
 
             model_name = model.__class__.__name__
             model_config = self.read_yaml_file(filename=MODEL_CONFIG_FILE)
             model_param_grid = model_config["train_model"][model_name]
             model_grid = GridSearchCV(
-                model, model_param_grid, verbose=VERBOSE, cv=CV, n_jobs=N_JOBS
+                model, model_param_grid, verbose=VERBOSE, cv=CV
             )
             model_grid.fit(x_train, y_train)
             logging.info("Exited the get_model_params method of MainUtils class")
