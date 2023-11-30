@@ -52,4 +52,12 @@ MODEL_TRAINER_ARTIFACTS_DIR = "ModelTrainerArtifacts"
 MODEL_FILE_NAME = "insurance_price_model.pkl"
 MODEL_SAVE_FORMAT = ".pkl"
 
+"""
+s3 bucket constants
+"""
+
+BUCKET_NAME = "insurprice-io-files"
+S3_MODEL_NAME = "insurance_price_model.pkl"
+
+
 

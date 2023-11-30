@@ -1,11 +1,13 @@
 from dataclasses import dataclass
 from from_root import from_root
 import os
-#from insurancePrice.configuration.s3_operations import S3Operation
+from insurancePrice.configuration.s3_operations import S3Operation
 from insurancePrice.utils.main_utils import MainUtils
 from insurancePrice.constants import *
 
-
+"""
+Data Ingestion Config
+"""
 @dataclass
 class DataIngestionConfig:
     def __init__(self):
@@ -26,7 +28,9 @@ class DataIngestionConfig:
                                                     DATA_INGESTION_TEST_FILE_NAME)
         
 
-
+"""
+Data Validation Config
+"""
 @dataclass
 class DataValidationConfig:
     def __init__(self):
@@ -42,7 +46,9 @@ class DataValidationConfig:
                                                      DATA_DRIFT_FILE_NAME)
         
 
-
+"""
+Data Transformation Config
+"""
 @dataclass
 class DataTransformationConfig:
     def __init__(self):
@@ -72,6 +78,9 @@ class DataTransformationConfig:
         )
 
 
+"""
+Model Trainer Config
+"""
 @dataclass
 class ModelTrainerConfig:
     def __init__(self):
@@ -85,6 +94,20 @@ class ModelTrainerConfig:
                                                                PREPROCESSOR_OBJECT_FILE_NAME)
         self.TRAINED_MODEL_FILE_PATH: str = os.path.join(from_root(), ARTIFACTS_DIR, MODEL_TRAINER_ARTIFACTS_DIR, 
                                                          MODEL_FILE_NAME)
+        
+
+"""
+Model Evaluation Config
+"""
+@dataclass
+class ModelEvaluationConfig:
+    def __init__(self):
+        self.S3_OPERATIONS = S3Operation()
+        self.UTILS = MainUtils()
+        self.BUCKET_NAME = BUCKET_NAME
+        self.BEST_MODEL_PATH: str = os.path.join(
+            from_root(),ARTIFACTS_DIR,MODEL_TRAINER_ARTIFACTS_DIR,MODEL_FILE_NAME
+        )
         
 
 

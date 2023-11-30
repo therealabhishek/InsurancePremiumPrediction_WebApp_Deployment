@@ -1,13 +1,16 @@
 import sys
 from insurancePrice.configuration.mongo_operations import MongoDBOperation
-from insurancePrice.entity.artifact_entity import DataIngestionArtifact, DataValidationArtifact, DataTransformationArtifact, ModelTrainerArtifact
+from insurancePrice.entity.artifact_entity import DataIngestionArtifact, DataValidationArtifact, DataTransformationArtifact, ModelTrainerArtifact, ModelEvaluationArtifact
 
-from insurancePrice.entity.config_entity import DataIngestionConfig, DataValidationConfig, DataTransformationConfig, ModelTrainerConfig
+from insurancePrice.entity.config_entity import DataIngestionConfig, DataValidationConfig, DataTransformationConfig, ModelTrainerConfig, ModelEvaluationConfig
 
 from insurancePrice.components.data_ingestion import DataIngestion
 from insurancePrice.components.data_validation import DataValidation
 from insurancePrice.components.data_transformation import DataTransformation
 from insurancePrice.components.model_trainer import ModelTrainer
+from insurancePrice.components.model_evaluation import ModelEvaluation
+from insurancePrice.configuration.s3_operations import S3Operation
+
 from insurancePrice.logger import logging
 from insurancePrice.exception import InsuranceException
 
@@ -19,7 +22,9 @@ class TrainPipeline:
         self.data_validation_config = DataValidationConfig()
         self.data_transformation_config = DataTransformationConfig()
         self.model_trainer_config = ModelTrainerConfig()
+        self.model_evaluation_config = ModelEvaluationConfig()
         self.mongo_op = MongoDBOperation()
+        self.s3_operations = S3Operation()
 
     # This method is used to start data ingestion
     def start_data_ingestion(self) -> DataIngestionArtifact:
@@ -67,7 +72,7 @@ class TrainPipeline:
             raise InsuranceException(e,sys)
         
 
-        # This method is used to start the model trainer
+    # This method is used to start the model trainer
     def start_model_trainer(
         self, data_transformation_artifact: DataTransformationArtifact
     ) -> ModelTrainerArtifact:
@@ -82,6 +87,25 @@ class TrainPipeline:
         except Exception as e:
             raise InsuranceException(e, sys) from e
         
+
+    # This method is used to start the model evaluation
+    def start_model_evaluation(
+        self,
+        data_ingestion_artifact: DataIngestionArtifact,
+        model_trainer_artifact: ModelTrainerArtifact,
+    ) -> ModelEvaluationArtifact:
+        try:
+            model_evaluation = ModelEvaluation(
+                model_evaluation_config=self.model_evaluation_config,
+                data_ingestion_artifact=data_ingestion_artifact,
+                model_trainer_artifact=model_trainer_artifact,
+            )
+            model_evaluation_artifact = model_evaluation.initiate_model_evaluation()
+            return model_evaluation_artifact
+
+        except Exception as e:
+            raise InsuranceException(e, sys) from e
+        
         
 
     def run_pipeline(self) -> None:
@@ -89,11 +113,26 @@ class TrainPipeline:
 
         try:
             data_ingestion_artifact = self.start_data_ingestion()
+            
             data_validation_artifact = self.start_data_validation(data_ingestion_artifact=data_ingestion_artifact)
+            
             data_transformation_artifact = self.start_data_transformation(data_ingestion_artifact=data_ingestion_artifact)
+            
             model_trainer_artifact = self.start_model_trainer(
                 data_transformation_artifact=data_transformation_artifact
             )
+            
+            model_evaluation_artifact = self.start_model_evaluation(
+                data_ingestion_artifact=data_ingestion_artifact,
+                model_trainer_artifact=model_trainer_artifact,
+            )
+
+            if not model_evaluation_artifact.is_model_accepted:
+                print("Model not accepted")
+            else:
+                print("Model Accepted.")
+                
+
 
             logging.info("Exited run_pipeline method of TrainPipeline class")
 
