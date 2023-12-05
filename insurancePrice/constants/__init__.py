@@ -59,5 +59,11 @@ s3 bucket constants
 BUCKET_NAME = "insurprice-io-files"
 S3_MODEL_NAME = "insurance_price_model.pkl"
 
+"""
+app host port
+"""
+APP_HOST = "127.0.0.1"
+APP_PORT = 8080
+
 
 
