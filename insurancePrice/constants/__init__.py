@@ -62,7 +62,7 @@ S3_MODEL_NAME = "insurance_price_model.pkl"
 """
 app host port
 """
-APP_HOST = "127.0.0.1"
+APP_HOST = "0.0.0.0"
 APP_PORT = 8080
 
 
