@@ -2,7 +2,7 @@ artifact
 saved_models
 venv
 docs
-log
+logs
 flowcharts
-notebooks
+notebook
 .git
