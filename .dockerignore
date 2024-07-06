@@ -1,4 +1,4 @@
-artifact
+artifacts
 saved_models
 venv
 docs
@@ -6,3 +6,4 @@ logs
 flowcharts
 notebook
 .git
+insurancePrice_e2e.egg-info
